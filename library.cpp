@@ -60,3 +60,25 @@ uint32_t toogle_bit32(uint32_t data, uint8_t bit_pos){
         return data;
     }
 }
+
+uint32_t carry_rotate32(uint32_t data, int8_t N) {
+    if (N > 0) {  // Rotar a la izquierda
+        for (int i = 0; i < N; i++) {
+            uint32_t carry_bit = (data & 0x80000000) >> 31; // Captura el bit de acarreo (MSb)
+            data = (data << 1) | carry_bit; // Rota a la izquierda y coloca el carry bit en el LSb
+        }
+    } 
+    else if (N < 0) {  // Rotar a la derecha
+        for (int i = 0; i < -N; i++) {  //-N para que se nos vuelva positivo el valor enviado por consola.
+            uint32_t carry_bit = (data & 0x1) << 31; // Captura el bit de acarreo (LSb)
+            data = (data >> 1) | carry_bit; // Rota a la derecha y coloca el carry bit en el MSb
+        }
+    }
+    return data;
+}
+
+uint8_t extract_segment(uint32_t data, uint8_t start, uint8_t end) {
+    uint32_t mask = ((1 << (end - start + 1)) - 1) << start; // Máscara con unos (1s) en la posición del segmento deseado
+    uint32_t segment = (data & mask) >> start;     // Aplicar la máscara y desplazar el segmento al LSB
+    return (uint8_t)segment; //Conversión explícita de tipo 
+}
